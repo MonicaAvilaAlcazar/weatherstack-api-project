@@ -5,7 +5,7 @@ const msgInfo = document.getElementById('msg-info');
 const msgLocation = document.getElementById('msg-location');
 const msgCurrent = document.getElementById('msg-current');
 const api = {
-    url: 'http://api.weatherstack.com',
+    url: 'https://api.weatherstack.com',
     endpoint: '/current',
     key: '5f8678eb20f4b93f535e668213188b25'
 }
