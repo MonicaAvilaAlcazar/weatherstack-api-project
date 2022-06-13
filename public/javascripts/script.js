@@ -11,18 +11,56 @@ const api = {
 }
 
 function loadLocation( location ) {
-    const { name = 'Unknown', region = 'Unknown', country = 'Unknown' } = location;
-    msgLocation.innerHTML = name + ', ' + region + ', ' + country;
+    const { name = 'Unknown', region = 'Unknown', country = 'Unknown', localtime = '' } = location;
+    msgLocation.innerHTML = name + ', ' + region + ', ' + country + ', ' + localtime;
 }
 
 function loadCurrent( current ) {
-    const { temperature = 0, feelslike = 0, weather_descriptions = [] } = current; 
-    msgCurrent.innerHTML = 'Status: ' +
-    weather_descriptions.join(', ') +
-    '. Temperature: ' +
-    temperature +
-    '. Feels Like: ' +
-    feelslike;
+    const { temperature = 0, feelslike = 0, humidity = 0, weather_icons = [], weather_descriptions = [] } = current;
+    let myTable   = document.createElement("table");
+    let myTableBody = document.createElement("tbody");
+    let tRow = document.createElement('tr');
+
+    if (weather_icons.length > 0) {
+        for (let i = 0; i < weather_icons.length; i++) {
+            let tData = document.createElement('td');
+            let image = document.createElement('img');
+            image.src = weather_icons[i];
+            image.alt = 'weather icon ' + (i + 1);
+            tData.appendChild(image);
+            tRow.appendChild(tData);
+        }
+    }
+    //const textString = 'Status: ' +
+        //weather_descriptions.join(', ') +
+        //'. Temperature: ' +
+        //temperature +
+        //'. Feels Like: ' +
+        //feelslike +
+        //'. Humidity: ' +
+        //humidity;
+    //const textContent = document.createTextNode(textString);
+    //tRow.appendChild(document.createElement('td').appendChild(textContent));
+    let weatherInfoRow = document.createElement('td');
+    const arrayContent = [
+        'Status: ' + weather_descriptions.join(', '),
+        'Temperature: ' + temperature,
+        'Feels Like: ' + feelslike,
+        'Humidity: ' + humidity
+    ];
+    for (let i = 0; i < arrayContent.length; i++) {
+        let textRow = document.createElement('tr');
+        let textData = document.createElement('td');
+        var textNode = document.createTextNode(arrayContent[i]);
+        textData.appendChild(textNode);
+        textRow.appendChild(textData);
+        weatherInfoRow.appendChild(textRow);
+    }
+
+    tRow.appendChild(weatherInfoRow);
+    myTableBody.appendChild(tRow);
+    myTable.appendChild(myTableBody);
+    msgCurrent.appendChild(myTable);
 }
 
 formButton.addEventListener('click', event => {
@@ -32,7 +70,9 @@ formButton.addEventListener('click', event => {
     msgInfo.innerHTML = '';
 
     msgLocation.innerHTML = '';
-    msgCurrent.innerHTML = '';
+    while (msgCurrent.firstChild) {
+        msgCurrent.removeChild(msgCurrent.firstChild);
+    }
 
     const { value = ''} = formInput;
     if (value.length === 0) {
